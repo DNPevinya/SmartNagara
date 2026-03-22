@@ -20,7 +20,6 @@ export default function ChatScreen({ onBack, complaintId }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header themed with Absolute Zero and True Blue */}
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack}>
           <Ionicons name="chevron-back" size={26} color="#0041C7" />
@@ -48,7 +47,6 @@ export default function ChatScreen({ onBack, complaintId }) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
         keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
-        {/* Input Bar themed with Picton Blue borders */}
         <View style={styles.inputBar}>
           <TouchableOpacity style={styles.attachBtn}>
             <Ionicons name="add" size={24} color="#1CA3DE" />
@@ -60,7 +58,7 @@ export default function ChatScreen({ onBack, complaintId }) {
             value={input} 
             onChangeText={setInput} 
           />
-          {/* Send Button using Absolute Zero */}
+
           <TouchableOpacity style={styles.sendBtn} onPress={sendMessage}>
             <Ionicons name="send" size={20} color="#fff" />
           </TouchableOpacity>
@@ -81,8 +79,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F1F5F9' 
   },
   headerTitle: { flex: 1, marginLeft: 15 },
-  name: { fontSize: 16, fontWeight: 'bold', color: '#0041C7' }, // Absolute Zero
-  sub: { fontSize: 11, color: '#0160C9' }, // True Blue
+  name: { fontSize: 16, fontWeight: 'bold', color: '#0041C7' }, 
+  sub: { fontSize: 11, color: '#0160C9' }, 
   list: { padding: 20 },
   bubble: { padding: 14, borderRadius: 18, marginBottom: 12, maxWidth: '80%' },
   officerBubble: { 
@@ -95,10 +93,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1,
     borderWidth: 1,
-    borderColor: '#3ACBE820' // Subtle Picton Blue tint
+    borderColor: '#3ACBE820' 
   },
   userBubble: { 
-    backgroundColor: '#0041C7', // Absolute Zero
+    backgroundColor: '#0041C7', 
     alignSelf: 'flex-end', 
     borderBottomRightRadius: 4, 
     elevation: 2 
@@ -111,7 +109,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', 
     alignItems: 'center', 
     borderTopWidth: 1, 
-    borderTopColor: '#3ACBE840', // Semi-transparent Picton Blue
+    borderTopColor: '#3ACBE840', 
     paddingBottom: Platform.OS === 'ios' ? 30 : 15 
   },
   attachBtn: { width: 40, height: 40, justifyContent: 'center', alignItems: 'center' },
@@ -123,13 +121,13 @@ const styles = StyleSheet.create({
     height: 40, 
     marginHorizontal: 10,
     borderWidth: 1,
-    borderColor: '#3ACBE8' // Picton Blue
+    borderColor: '#3ACBE8' 
   },
   sendBtn: { 
     width: 40, 
     height: 40, 
     borderRadius: 20, 
-    backgroundColor: '#0041C7', // Absolute Zero
+    backgroundColor: '#0041C7', 
     justifyContent: 'center', 
     alignItems: 'center' 
   }

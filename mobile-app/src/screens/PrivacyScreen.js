@@ -4,11 +4,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function PrivacyScreen({ onBack }) {
-  // --- 🔒 LOGIC VAULT: Safe Static Content ---
   return (
     <SafeAreaView style={styles.container} edges={Platform.OS === 'android' ? ['top'] : []}>
       
-      {/* 🌟 STANDARDIZED NAVBAR HEADER 🌟 */}
       <View style={[styles.topNavBar, Platform.OS === 'ios' && { paddingTop: 20 }]}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn} activeOpacity={0.7}>
           <Ionicons name="chevron-back" size={24} color="#0041C7" />
@@ -59,7 +57,6 @@ export default function PrivacyScreen({ onBack }) {
   );
 }
 
-// --- UPGRADED UI COMPONENTS ---
 const PolicySection = ({ title, body, icon }) => (
   <View style={styles.sectionCard}>
     <View style={styles.sectionHeader}>
@@ -75,7 +72,7 @@ const PolicySection = ({ title, body, icon }) => (
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
   
-  // Standardized Navbar Styles
+
   topNavBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 15, backgroundColor: '#F8FAFC' },
   backBtn: { flexDirection: 'row', alignItems: 'center', width: 70 },
   backText: { color: '#0041C7', fontSize: 16, fontWeight: '600', marginLeft: 4 },
@@ -86,7 +83,7 @@ const styles = StyleSheet.create({
   updateBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(1, 96, 201, 0.08)', alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, marginBottom: 25 },
   lastUpdated: { fontSize: 12, color: '#0160C9', fontWeight: '700', marginLeft: 6 },
   
-  // Premium Cards
+
   sectionCard: { 
     backgroundColor: '#fff', 
     borderRadius: 20, 

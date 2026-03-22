@@ -24,10 +24,9 @@ export default function LoginScreen({ onLoginSuccess, onCreateAccount, onNavigat
   const handleLogin = async () => {
     if (!validateForm()) return;
     setLoading(true);
-    setErrors({}); // Clear previous errors
+    setErrors({}); 
 
     try {
-      // ⚠️ DOUBLE CHECK THIS IP: It must match your current laptop IP from 'ipconfig'
       const response = await fetch(`${BASE_URL}/api/auth/login`, {
       method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -37,7 +36,6 @@ export default function LoginScreen({ onLoginSuccess, onCreateAccount, onNavigat
       const data = await response.json();
       
       if (response.ok && data.user) {
-        // SUCCESS PATH
         onLoginSuccess(
           data.user.id,          
           data.user.fullName,    
@@ -52,7 +50,7 @@ export default function LoginScreen({ onLoginSuccess, onCreateAccount, onNavigat
         setErrors({ server: data.message || "Invalid email or password." });
       }
     } catch (error) {
-      // NETWORK ERROR (The Pink Box culprit)
+      // NETWORK ERROR 
       console.error("Login Connection Error:", error);
       setErrors({ server: "Connection error. Check your Server IP & Wi-Fi." });
     } finally {
@@ -65,7 +63,6 @@ export default function LoginScreen({ onLoginSuccess, onCreateAccount, onNavigat
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.content}>
         
         <View style={styles.header}>
-          {/* 👉 Logo integrated to match your brand style */}
           <View style={styles.logoWrapper}>
             <Image 
               source={require('../../assets/images/smartlogo.png')} 

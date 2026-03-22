@@ -5,7 +5,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BASE_URL } from '../../src/config';
 
 export default function ForgotPasswordScreen({ onBack, onResetSuccess }) {
-  // Step 1: 'email' | Step 2: 'otp' | Step 3: 'new_password'
   const [step, setStep] = useState('email'); 
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -14,13 +13,12 @@ export default function ForgotPasswordScreen({ onBack, onResetSuccess }) {
   const handleSendOTP = async () => {
     if (!email) return alert("Please enter your email.");
     try {
-      // 👉 Make sure this IP matches your actual backend IP!
-      await fetch('http://192.168.8.103:5000/api/auth/forgot-password', {
+      await fetch('http://192.168.8.102:5000/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.toLowerCase().trim() }),
       });
-      setStep('otp'); // Move to next screen even if email fails, because we log it in the backend!
+      setStep('otp'); 
     } catch (error) {
       alert("Server error. Check your connection.");
     }
@@ -57,7 +55,6 @@ export default function ForgotPasswordScreen({ onBack, onResetSuccess }) {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.content}>
         
-        {/* Header with Back Button */}
         <View style={styles.header}>
           <TouchableOpacity onPress={onBack} style={styles.backBtn}>
             <Ionicons name="chevron-back" size={24} color="#0160C9" />

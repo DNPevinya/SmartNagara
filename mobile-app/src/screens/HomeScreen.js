@@ -14,7 +14,6 @@ export default function HomeScreen({
   onNavigateToDetails, 
   onNavigateToNotifications 
 }) {
-  // --- 🔒 LOGIC VAULT (UNTOUCHED) ---
   const [stats, setStats] = useState({ total: 0, pending: 0, resolved: 0 });
   const [loadingStats, setLoadingStats] = useState(true);
 
@@ -44,12 +43,9 @@ export default function HomeScreen({
     { id: 1, title: 'Waste Management', desc: 'Complaint #CMB-4920 resolved.', time: '2H AGO', color: '#28C76F', icon: 'check-circle' },
     { id: 2, title: 'Street Light Repair', desc: 'Assigned to Urban Dept.', time: 'YESTERDAY', color: '#FF9F43', icon: 'dots-horizontal-circle' },
   ];
-  // --- END OF LOGIC ---
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      
-      {/* 🌟 STANDARDIZED NAVBAR HEADER 🌟 */}
       <View style={styles.topNavBar}>
         <View>
           <Text style={styles.greetingText}>Ayubowan, {userFirstName || 'Citizen'}</Text>
@@ -147,7 +143,6 @@ export default function HomeScreen({
   );
 }
 
-// --- UPGRADED UI COMPONENTS ---
 
 const StatCard = ({ label, value, color, icon }) => (
   <View style={styles.statCard}>
@@ -174,8 +169,6 @@ const ActivityItem = ({ title, desc, time, icon, color }) => (
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
-  
-  // Standardized Navbar Styles
   topNavBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 25, paddingTop: 15, paddingBottom: 10, backgroundColor: '#F8FAFC' },
   greetingText: { fontSize: 13, color: '#64748B', fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 },
   navTitle: { fontSize: 26, fontWeight: '800', color: '#0041C7' },

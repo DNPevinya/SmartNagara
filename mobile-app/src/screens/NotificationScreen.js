@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function NotificationScreen({ onBack }) {
-  // --- 🔒 LOGIC VAULT (UNTOUCHED MOCK DATA) ---
+  // MOCK DATA ---
   const notifications = [
     {
       id: 1,
@@ -31,12 +31,10 @@ export default function NotificationScreen({ onBack }) {
       icon: 'message-text-outline',
     },
   ];
-  // --- END OF LOGIC ---
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       
-      {/* 🌟 STANDARDIZED NAVBAR HEADER (Matches Home & View Complaints) 🌟 */}
       <View style={styles.topNavBar}>
         <View style={styles.navLeft}>
           <TouchableOpacity onPress={onBack} style={styles.backButton} activeOpacity={0.7}>
@@ -70,7 +68,6 @@ export default function NotificationScreen({ onBack }) {
           </TouchableOpacity>
         ))}
         
-        {/* End of list indicator */}
         <View style={styles.endOfList}>
           <Ionicons name="checkmark-circle-outline" size={24} color="#CBD5E1" />
           <Text style={styles.endOfListText}>You're all caught up!</Text>
@@ -80,11 +77,11 @@ export default function NotificationScreen({ onBack }) {
   );
 }
 
-// --- UPGRADED UI COMPONENTS ---
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
   
-  // Standardized Navbar Styles
+
   topNavBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 15, paddingBottom: 15, backgroundColor: '#F8FAFC' },
   navLeft: { flexDirection: 'row', alignItems: 'center' },
   backButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', marginRight: 15, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 3, borderWidth: 1, borderColor: '#E2E8F0' },
@@ -114,8 +111,6 @@ const styles = StyleSheet.create({
   notifTitle: { fontSize: 16, fontWeight: '800', color: '#1E293B' },
   notifTime: { fontSize: 11, color: '#94A3B8', fontWeight: '600' },
   notifMessage: { fontSize: 13, color: '#64748B', lineHeight: 20, fontWeight: '500' },
-  
-  // Dynamic Icon Colors (Matched to SmartNagara Palette)
   successIcon: { backgroundColor: 'rgba(40, 199, 111, 0.12)' },
   successColor: { color: '#28C76F' },
   infoIcon: { backgroundColor: 'rgba(1, 96, 201, 0.12)' }, 

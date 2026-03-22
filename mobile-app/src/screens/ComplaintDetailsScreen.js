@@ -6,7 +6,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BASE_URL } from '../../src/config';
 
 export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, complaintId }) {
-  // --- 🔒 LOGIC VAULT ---
   const [complaint, setComplaint] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
@@ -63,7 +62,6 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
     );
   }
 
-  // --- DATA PARSING ---
   const displayId = complaint.id || complaint.complaint_id || '0000';
   const status = complaint.status ? complaint.status.toUpperCase() : 'PENDING';
   const assignedAuthority = complaint.assigned_authority ? complaint.assigned_authority : null;
@@ -91,7 +89,6 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
 
   const statusColor = getStatusColor(status);
 
-  // 🌟 THE FIX: Parse the comma-separated string into an array of full URLs
   const imageList = complaint.image_url 
     ? complaint.image_url.split(',').map(url => `${SERVER_URL}${url.trim()}`)
     : ['https://via.placeholder.com/400x200?text=No+Image+Provided'];
@@ -104,7 +101,6 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
   return (
     <SafeAreaView style={styles.container} edges={Platform.OS === 'android' ? ['top'] : []}>
       
-      {/* FULL SCREEN IMAGE MODAL */}
       <Modal visible={isImageModalVisible} transparent={true} animationType="fade">
         <View style={styles.modalBackground}>
           <TouchableOpacity style={styles.closeModalBtn} onPress={() => setImageModalVisible(false)}>
@@ -116,7 +112,6 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
         </View>
       </Modal>
 
-      {/* 🌟 STANDARDIZED NAVBAR HEADER 🌟 */}
       <View style={[styles.topNavBar, Platform.OS === 'ios' && { paddingTop: 10 }]}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn} activeOpacity={0.7}>
           <Ionicons name="chevron-back" size={24} color="#0041C7" />
@@ -131,7 +126,6 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         
-        {/* SUMMARY CARD */}
         <View style={styles.summaryCard}>
            <View style={styles.cardHeaderRow}>
              <Text style={styles.complaintIdText}>#SL-{displayId}</Text>
@@ -146,7 +140,6 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
            </View>
         </View>
 
-        {/* 🌟 MULTIPLE IMAGES ROW 🌟 */}
         <Text style={styles.sectionLabel}>EVIDENCE PHOTOS</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageScrollContainer}>
           {imageList.map((url, index) => (
@@ -164,7 +157,6 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
           <Text style={styles.descText}>{complaint.description}</Text>
         </View>
 
-        {/* AUTHORITY CARD */}
         <View style={styles.authorityCard}>
           <View style={[styles.authorityIconBox, { backgroundColor: assignedAuthority ? 'rgba(0, 65, 199, 0.1)' : '#F1F5F9' }]}>
             <MaterialCommunityIcons name="office-building" size={24} color={assignedAuthority ? '#0041C7' : '#94A3B8'} />
@@ -177,7 +169,6 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
           </View>
         </View>
 
-        {/* STATUS TIMELINE */}
         <Text style={styles.sectionLabel}>STATUS TIMELINE</Text>
         <View style={styles.timelineCard}>
           
@@ -235,7 +226,6 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
         </View>
       </ScrollView>
 
-      {/* FLOATING ACTION BOTTOM BAR */}
       <View style={styles.bottomBar}>
         <TouchableOpacity style={{ flex: 1 }} onPress={onNavigateToChat} activeOpacity={0.8}>
            <LinearGradient colors={['#0041C7', '#0D85D8']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.chatButton}>
@@ -251,27 +241,20 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
   );
 }
 
-// --- PREMIUM UI STYLES ---
 const styles = StyleSheet.create({
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F8FAFC' },
   loadingText: { marginTop: 15, color: '#64748B', fontWeight: '600', fontSize: 16 },
   errorText: { color: '#64748B', fontSize: 18, fontWeight: '700', marginTop: 15 },
   goBackBtn: { marginTop: 25, backgroundColor: '#0041C7', paddingHorizontal: 25, paddingVertical: 12, borderRadius: 12 },
   goBackText: { color: '#fff', fontWeight: '800', fontSize: 16 },
-  
   container: { flex: 1, backgroundColor: '#F8FAFC' },
-  
-  // Standardized Navbar
   topNavBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 15, backgroundColor: '#F8FAFC' },
   backBtn: { flexDirection: 'row', alignItems: 'center', width: 70 },
   backText: { color: '#0041C7', fontSize: 16, fontWeight: '700', marginLeft: 4 },
   headerTitleContainer: { alignItems: 'center' },
   navTitle: { fontSize: 18, fontWeight: '900', color: '#1E293B' },
   headerSubtitle: { fontSize: 10, color: '#0160C9', fontWeight: '800', letterSpacing: 1, marginTop: 2 },
-  
   scrollContent: { padding: 20, paddingBottom: 100 },
-  
-  // Summary Card
   summaryCard: { backgroundColor: '#fff', borderRadius: 20, padding: 20, marginBottom: 25, borderWidth: 1.5, borderColor: '#E2E8F0', elevation: 2, shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 5 },
   cardHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   complaintIdText: { fontSize: 15, fontWeight: '900', color: '#0041C7', letterSpacing: 0.5 },
@@ -280,10 +263,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 22, fontWeight: '900', color: '#1E293B', marginBottom: 12, lineHeight: 28 },
   locationRow: { flexDirection: 'row', alignItems: 'flex-start' },
   locationText: { fontSize: 14, color: '#64748B', marginLeft: 6, fontWeight: '600', flex: 1, lineHeight: 20 },
-  
   sectionLabel: { fontSize: 12, fontWeight: '800', color: '#64748B', letterSpacing: 1, marginBottom: 12, marginLeft: 5 },
-  
-  // Multiple Image Scroll
   imageScrollContainer: { flexDirection: 'row', marginBottom: 25 },
   imageWrapper: { width: 280, height: 180, borderRadius: 16, overflow: 'hidden', marginRight: 15, borderWidth: 1, borderColor: '#E2E8F0', backgroundColor: '#F1F5F9' },
   mainImage: { width: '100%', height: '100%' },

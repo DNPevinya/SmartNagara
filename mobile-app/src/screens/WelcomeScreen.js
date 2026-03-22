@@ -7,12 +7,10 @@ export default function WelcomeScreen({ onGetStarted }) {
   return (
     <LinearGradient colors={['#0041C7', '#0D85D8']} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.content}>
-          
-          {/* Top Section */}
+        <View style={styles.content}>       
           <View style={styles.topSection}>
             <View style={styles.iconCircle}>
-              {/* 👉 The New Logo is here! */}
+
               <Image 
                 source={require('../../assets/images/smartlogo.png')} 
                 style={styles.logoImage}
@@ -26,11 +24,7 @@ export default function WelcomeScreen({ onGetStarted }) {
           </View>
 
           <View style={{ flex: 1 }} />
-
-          {/* Bottom Section */}
           <View style={styles.bottomSection}>
-            
-            {/* 👉 Upgraded to a modern "Glassmorphism" transparent box */}
             <View style={styles.glassInfoBox}>
               <View style={styles.iconWrapper}>
                 <Ionicons name="shield-checkmark" size={24} color="#3ACBE8" />
@@ -40,7 +34,6 @@ export default function WelcomeScreen({ onGetStarted }) {
               </Text>
             </View>
 
-            {/* Premium Floating Button */}
             <TouchableOpacity style={styles.button} onPress={onGetStarted} activeOpacity={0.8}>
               <Text style={styles.buttonText}>Get Started</Text>
               <Ionicons name="arrow-forward" size={22} color="#0160C9" />
@@ -75,7 +68,7 @@ const styles = StyleSheet.create({
     width: 130,
     height: 130,
     borderRadius: 65,
-    backgroundColor: '#ffffff', // Solid white to blend with the logo background
+    backgroundColor: '#ffffff', 
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 30,
@@ -84,10 +77,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 10,
-    overflow: 'hidden', // Clips the logo perfectly into a circle
+    overflow: 'hidden', 
   },
   logoImage: {
-    width: '140%', // Zooms in to hide the white rectangular edges
+    width: '140%',
     height: '140%',
   },
   title: {
@@ -111,7 +104,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   glassInfoBox: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)', // Transparent glass effect
+    backgroundColor: 'rgba(255, 255, 255, 0.15)', 
     padding: 20,
     borderRadius: 20,
     flexDirection: 'row',
@@ -119,7 +112,7 @@ const styles = StyleSheet.create({
     marginBottom: 35, 
     width: '100%',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)', // Subtle white border
+    borderColor: 'rgba(255, 255, 255, 0.3)', 
   },
   iconWrapper: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',

@@ -4,11 +4,8 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HelpScreen({ onBack, onNavigateToFAQ }) {
-  // --- 🔒 LOGIC VAULT: Safe Static Content ---
   return (
-    <SafeAreaView style={styles.container} edges={Platform.OS === 'android' ? ['top'] : []}>
-      
-      {/* 🌟 STANDARDIZED NAVBAR HEADER 🌟 */}
+    <SafeAreaView style={styles.container} edges={Platform.OS === 'android' ? ['top'] : []}>   
       <View style={[styles.topNavBar, Platform.OS === 'ios' && { paddingTop: 20 }]}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn} activeOpacity={0.7}>
           <Ionicons name="chevron-back" size={24} color="#0041C7" />
@@ -92,11 +89,9 @@ export default function HelpScreen({ onBack, onNavigateToFAQ }) {
   );
 }
 
-// --- UPGRADED UI COMPONENTS ---
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
   
-  // Standardized Navbar Styles
   topNavBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 15, backgroundColor: '#F8FAFC' },
   backBtn: { flexDirection: 'row', alignItems: 'center', width: 70 },
   backText: { color: '#0041C7', fontSize: 16, fontWeight: '600', marginLeft: 4 },
@@ -105,7 +100,6 @@ const styles = StyleSheet.create({
   content: { padding: 25 },
   intro: { fontSize: 15, color: '#64748B', lineHeight: 22, marginBottom: 25, fontWeight: '500' },
   
-  // Premium Cards
   stepCard: { 
     backgroundColor: '#fff', 
     borderRadius: 20, 

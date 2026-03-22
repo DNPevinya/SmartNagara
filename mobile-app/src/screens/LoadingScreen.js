@@ -8,7 +8,6 @@ export default function LoadingScreen({ onFinish }) {
   const scaleAnim = useRef(new Animated.Value(0.5)).current;
 
   useEffect(() => {
-    // Start the fade and scale animations at the same time
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -17,7 +16,7 @@ export default function LoadingScreen({ onFinish }) {
       }),
       Animated.spring(scaleAnim, {
         toValue: 1,
-        friction: 5, // Adds a slight, elegant bounce
+        friction: 5, // Adds a bounce
         useNativeDriver: true,
       })
     ]).start();
@@ -33,7 +32,6 @@ export default function LoadingScreen({ onFinish }) {
   return (
     <LinearGradient colors={['#0041C7', '#0D85D8']} style={styles.container}>
       
-      {/* The Animated Wrapper */}
       <Animated.View style={[
         styles.logoContainer, 
         { 
@@ -42,7 +40,6 @@ export default function LoadingScreen({ onFinish }) {
         }
       ]}>
         
-        {/* White circle to frame your logo perfectly */}
         <View style={styles.iconCircle}>
           <Image 
             source={require('../../assets/images/smartlogo.png')} 
@@ -51,7 +48,6 @@ export default function LoadingScreen({ onFinish }) {
           />
         </View>
         
-        {/* Updated to the new project name */}
         <Text style={styles.logoText}>SmartNagara</Text>
       </Animated.View>
       
@@ -77,8 +73,8 @@ const styles = StyleSheet.create({
   iconCircle: {
     width: 140,
     height: 140,
-    borderRadius: 70, // Makes it a perfect circle
-    backgroundColor: '#ffffff', // Solid white to contrast the blue gradient
+    borderRadius: 70, 
+    backgroundColor: '#ffffff', 
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
@@ -86,8 +82,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
-    elevation: 8, // Adds a nice drop shadow on Android
-    overflow: 'hidden', // Keeps the image inside the circle
+    elevation: 8, 
+    overflow: 'hidden',
   },
   logoImage: {
     width: '75%', 

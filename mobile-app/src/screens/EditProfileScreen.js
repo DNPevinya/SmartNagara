@@ -76,7 +76,6 @@ export default function EditProfileScreen({ onBack, initialData = {}, onUpdateSu
   };
 
   const handleUpdate = async () => {
-    // 🛠️ THE BUG FIX IS RIGHT HERE!
     if (oldPassword && !newPassword) {
       Alert.alert("Incomplete", "You entered your current password. Please enter a new password if you wish to change it.");
       return;
@@ -147,7 +146,7 @@ export default function EditProfileScreen({ onBack, initialData = {}, onUpdateSu
         }
         onBack();
       } else {
-        // This will now properly catch a wrong password from the backend!
+        // This will catch a wrong password from the backend
         Alert.alert("Error", data.message || "Failed to update profile.");
       }
     } catch (error) {
@@ -160,7 +159,6 @@ export default function EditProfileScreen({ onBack, initialData = {}, onUpdateSu
   return (
     <SafeAreaView style={styles.container} edges={Platform.OS === 'android' ? ['top'] : []}>
       
-      {/* 🌟 PREMIUM HEADER 🌟 */}
       <View style={[styles.header, Platform.OS === 'ios' && { paddingTop: 20 }]}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn} activeOpacity={0.7}>
           <Ionicons name="chevron-back" size={24} color="#0041C7" />

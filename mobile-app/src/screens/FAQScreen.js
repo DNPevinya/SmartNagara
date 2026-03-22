@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function FAQScreen({ onBack }) {
-  // --- 🔒 LOGIC VAULT: Safe Static Content ---
   const faqs = [
     {
       question: "How long does it take to fix a reported issue?",
@@ -31,7 +30,6 @@ export default function FAQScreen({ onBack }) {
   return (
     <SafeAreaView style={styles.container} edges={Platform.OS === 'android' ? ['top'] : []}>
       
-      {/* 🌟 STANDARDIZED NAVBAR HEADER 🌟 */}
       <View style={[styles.topNavBar, Platform.OS === 'ios' && { paddingTop: 20 }]}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn} activeOpacity={0.7}>
           <Ionicons name="chevron-back" size={24} color="#0041C7" />
@@ -70,11 +68,9 @@ export default function FAQScreen({ onBack }) {
   );
 }
 
-// --- UPGRADED UI COMPONENTS ---
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
   
-  // Standardized Navbar Styles
   topNavBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 15, backgroundColor: '#F8FAFC' },
   backBtn: { flexDirection: 'row', alignItems: 'center', width: 70 },
   backText: { color: '#0041C7', fontSize: 16, fontWeight: '600', marginLeft: 4 },
@@ -83,7 +79,6 @@ const styles = StyleSheet.create({
   content: { padding: 25 },
   subTitle: { fontSize: 12, fontWeight: '800', color: '#94A3B8', letterSpacing: 1, marginBottom: 20, marginLeft: 5 },
   
-  // Premium FAQ Cards
   faqCard: { 
     backgroundColor: '#fff', 
     borderRadius: 20, 

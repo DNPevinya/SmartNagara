@@ -15,7 +15,6 @@ export default function ProfileScreen({
   onNavigateToPrivacy, 
   onLogout 
 }) {
-  // --- 🔒 LOGIC VAULT (UNTOUCHED) ---
   const SERVER_URL = BASE_URL;
   const [imageFailed, setImageFailed] = useState(false);
 
@@ -35,7 +34,6 @@ export default function ProfileScreen({
     
     const cacheBuster = `?t=${new Date().getTime()}`;
 
-    // Fix for absolute URLs from the database
     if (initialData.profilePicture.startsWith('http')) {
        return `${initialData.profilePicture}${cacheBuster}`;
     }
@@ -47,12 +45,10 @@ export default function ProfileScreen({
   };
 
   const finalImageUri = getProfileImage();
-  // --- END OF LOGIC ---
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       
-      {/* 🌟 STANDARDIZED NAVBAR HEADER (Matches Home & Complaints) 🌟 */}
       <View style={styles.topNavBar}>
         <View>
           <Text style={styles.greetingText}>SETTINGS</Text>
@@ -65,7 +61,6 @@ export default function ProfileScreen({
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         
-        {/* PROFILE HEADER CARD */}
         <View style={styles.profileHeaderCard}>
           <View style={styles.avatarWrapper}>
             {finalImageUri && !imageFailed ? (
@@ -91,8 +86,7 @@ export default function ProfileScreen({
             )}
           </View>
         </View>
-
-        {/* ACCOUNT MANAGEMENT */}
+        
         <Text style={styles.sectionLabel}>ACCOUNT MANAGEMENT</Text>
         <MenuOption icon="person-outline" label="Edit Profile Details" onPress={onNavigateToEdit} />
 

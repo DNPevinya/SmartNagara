@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BASE_URL } from '../../src/config';
 
 export default function ViewComplaintsScreen({ onNavigateToDetails, userId }) {
-  // --- 🔒 LOGIC VAULT (UNTOUCHED) ---
   const [filter, setFilter] = useState('All');
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,12 +60,10 @@ export default function ViewComplaintsScreen({ onNavigateToDetails, userId }) {
 
     return matchesFilter && matchesSearch;
   });
-  // --- END OF LOGIC ---
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       
-      {/* 🌟 STANDARDIZED NAVBAR HEADER 🌟 */}
       <View style={styles.topNavBar}>
         <View>
           <Text style={styles.greetingText}>OVERVIEW</Text>
@@ -74,7 +71,6 @@ export default function ViewComplaintsScreen({ onNavigateToDetails, userId }) {
         </View>
       </View>
 
-      {/* 🔍 PREMIUM SEARCH BAR */}
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#64748B" style={styles.searchIcon} />
         <TextInput
@@ -91,7 +87,6 @@ export default function ViewComplaintsScreen({ onNavigateToDetails, userId }) {
         )}
       </View>
 
-      {/* 🎛️ MODERN PILL FILTER TABS */}
       <View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterBar}>
           {['All', 'Pending', 'In Progress', 'Resolved'].map((tab) => (
@@ -124,7 +119,7 @@ export default function ViewComplaintsScreen({ onNavigateToDetails, userId }) {
             const uniqueKey = displayId !== '0000' ? displayId.toString() : index.toString();
             const statusColor = getStatusColor(item.status);
             
-            // 🌟 THE FIX: Grab only the first image if there are multiple separated by commas
+            // Grab only the first image if there are multiple 
             const firstImage = item.image_url ? item.image_url.split(',')[0] : null;
 
             return (
@@ -171,29 +166,20 @@ export default function ViewComplaintsScreen({ onNavigateToDetails, userId }) {
   );
 }
 
-// --- UPGRADED UI COMPONENTS ---
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
-  
-  // Standardized Navbar Styles (Matching Home)
   topNavBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 25, paddingTop: 15, paddingBottom: 15, backgroundColor: '#F8FAFC' },
   greetingText: { fontSize: 12, color: '#94A3B8', fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 2 },
   navTitle: { fontSize: 26, fontWeight: '800', color: '#0041C7' },
-  
-  // Premium Search Bar
   searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', marginHorizontal: 25, marginBottom: 20, paddingHorizontal: 15, height: 55, borderRadius: 16, borderWidth: 1.5, borderColor: '#E2E8F0', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.03, shadowRadius: 4, elevation: 1 },
   searchIcon: { marginRight: 12 },
   searchInput: { flex: 1, fontSize: 16, color: '#1E293B' },
   clearBtn: { padding: 5 },
-
-  // Modern Pill Filters
   filterBar: { paddingHorizontal: 25, paddingBottom: 15 },
   filterTab: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, backgroundColor: '#fff', marginRight: 12, borderWidth: 1, borderColor: '#E2E8F0', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2, elevation: 1 }, 
   filterTabActive: { backgroundColor: '#0041C7', borderColor: '#0041C7' }, 
   filterText: { fontSize: 14, color: '#64748B', fontWeight: '600' }, 
   filterTextActive: { color: '#fff', fontWeight: '700' },
-  
-  // Content & Cards
   listContent: { paddingHorizontal: 25, paddingBottom: 60 },
   emptyContainer: { alignItems: 'center', justifyContent: 'center', marginTop: 60 },
   emptyText: { textAlign: 'center', color: '#94A3B8', marginTop: 15, fontSize: 16, fontWeight: '500' },

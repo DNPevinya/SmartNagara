@@ -36,7 +36,6 @@ export default function SignupScreen({
   const [districtItems, setDistrictItems] = useState(Object.keys(locationData).map(dist => ({ label: dist, value: dist })));
   const [divisionItems, setDivisionItems] = useState([]);
 
-  // LOGIC REMAINS EXACTLY THE SAME
   useEffect(() => {
     if (districtValue) {
       setDivisionItems(locationData[districtValue].map(div => ({ label: div, value: div })));
@@ -96,7 +95,6 @@ export default function SignupScreen({
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           
           <View style={styles.header}>
-            {/* 👉 Logo integrated perfectly */}
             <View style={styles.logoWrapper}>
               <Image 
                 source={require('../../assets/images/smartlogo.png')} 

@@ -81,12 +81,10 @@ export default function SubmitComplaintScreen({ onBack, userId }) {
     })();
   }, []);
 
-  // 🌟 THE FIX: Using OpenStreetMap's Free Geocoder API instead of the confused emulator!
   const handleLocationSearch = async () => {
     if (!searchQuery.trim()) return;
     setSearchingLocation(true);
     try {
-      // Force the search to look inside Sri Lanka
       const query = searchQuery.toLowerCase().includes('sri lanka') ? searchQuery : `${searchQuery}, Sri Lanka`;
       const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
       
@@ -112,7 +110,7 @@ export default function SubmitComplaintScreen({ onBack, userId }) {
     if (images.length >= 3) return Alert.alert("Limit", "Max 3 photos allowed.");
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') return;
-    let result = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 0.7, exif: true });
+    let result = await ImagePicker.launchCameraAsync({ quality: 0.7, exif: true });
     if (!result.canceled) processImage(result.assets[0]);
   };
 
