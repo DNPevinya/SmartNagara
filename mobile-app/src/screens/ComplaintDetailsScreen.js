@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert, Modal } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert, Modal, Platform } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { BASE_URL } from '../../src/config';
 
 export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, complaintId }) {
+  // --- 🔒 LOGIC VAULT ---
   const [complaint, setComplaint] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null); 
 
   const SERVER_URL = BASE_URL;
 
@@ -27,7 +30,6 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
     }
   };
 
-  // 👉 RESTORED: Your original, awesome 3-dot menu features!
   const handleOptionsClick = () => {
     Alert.alert(
       "Complaint Options",
@@ -44,6 +46,7 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
     return (
       <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0041C7" />
+        <Text style={styles.loadingText}>Loading Details...</Text>
       </SafeAreaView>
     );
   }
@@ -51,20 +54,20 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
   if (!complaint) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <Text style={{ color: '#64748B' }}>Complaint not found.</Text>
-        <TouchableOpacity onPress={onBack} style={{ marginTop: 20 }}>
-          <Text style={{ color: '#0041C7' }}>Go Back</Text>
+        <Ionicons name="document-text-outline" size={64} color="#CBD5E1" />
+        <Text style={styles.errorText}>Complaint not found.</Text>
+        <TouchableOpacity onPress={onBack} style={styles.goBackBtn}>
+          <Text style={styles.goBackText}>Go Back</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
   }
 
+  // --- DATA PARSING ---
   const displayId = complaint.id || complaint.complaint_id || '0000';
   const status = complaint.status ? complaint.status.toUpperCase() : 'PENDING';
   const assignedAuthority = complaint.assigned_authority ? complaint.assigned_authority : null;
   
-  // 👉 NEW: Dynamically extracts the district from your reverse-geocoded text!
-  // If location_text is "Galle Road, Colombo", it grabs "Colombo" and makes it "COLOMBO DISTRICT"
   const locationText = complaint.location_text || "Unknown Location";
   const locationParts = locationText.split(',');
   const headerDistrict = locationParts.length > 1 
@@ -81,76 +84,106 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
     switch (stat) {
       case 'PENDING': return '#FF9F43';
       case 'RESOLVED': return '#28C76F';
-      case 'IN PROGRESS': return '#0160C9';
+      case 'IN PROGRESS': return '#0041C7';
       default: return '#FF9F43';
     }
   };
 
   const statusColor = getStatusColor(status);
-  const imageUrl = complaint.image_url ? `${SERVER_URL}${complaint.image_url}` : 'https://via.placeholder.com/400x200';
+
+  // 🌟 THE FIX: Parse the comma-separated string into an array of full URLs
+  const imageList = complaint.image_url 
+    ? complaint.image_url.split(',').map(url => `${SERVER_URL}${url.trim()}`)
+    : ['https://via.placeholder.com/400x200?text=No+Image+Provided'];
+
+  const openImageModal = (url) => {
+    setSelectedImageUrl(url);
+    setImageModalVisible(true);
+  };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={Platform.OS === 'android' ? ['top'] : []}>
+      
+      {/* FULL SCREEN IMAGE MODAL */}
       <Modal visible={isImageModalVisible} transparent={true} animationType="fade">
         <View style={styles.modalBackground}>
           <TouchableOpacity style={styles.closeModalBtn} onPress={() => setImageModalVisible(false)}>
-            <Ionicons name="close" size={30} color="#fff" />
+            <Ionicons name="close-circle" size={36} color="#fff" />
           </TouchableOpacity>
-          <Image source={{ uri: imageUrl }} style={styles.fullScreenImage} resizeMode="contain" />
+          {selectedImageUrl && (
+            <Image source={{ uri: selectedImageUrl }} style={styles.fullScreenImage} resizeMode="contain" />
+          )}
         </View>
       </Modal>
 
-      <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.headerIcon}>
+      {/* 🌟 STANDARDIZED NAVBAR HEADER 🌟 */}
+      <View style={[styles.topNavBar, Platform.OS === 'ios' && { paddingTop: 10 }]}>
+        <TouchableOpacity onPress={onBack} style={styles.backBtn} activeOpacity={0.7}>
           <Ionicons name="chevron-back" size={24} color="#0041C7" />
+          <Text style={styles.backText}>Back</Text>
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerTitle}>Complaint #SL-{displayId}</Text>
-          {/* 👉 DYNAMIC HEADER DISTRICT HERE */}
-          <Text style={styles.headerSubtitle}>{headerDistrict}</Text>
+           <Text style={styles.navTitle}>Report Details</Text>
+           <Text style={styles.headerSubtitle}>{headerDistrict}</Text>
         </View>
-        <View style={{ width: 34 }} />
+        <View style={{ width: 70 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <View style={[styles.statusBadge, { backgroundColor: statusColor + '15' }]}>
-          <Text style={[styles.statusText, { color: statusColor }]}>{status}</Text>
-        </View>
-        <Text style={styles.title}>{complaint.title || complaint.category}</Text>
-        <View style={styles.locationRow}>
-          <Ionicons name="location-outline" size={16} color="#64748B" />
-          <Text style={styles.locationText}>{locationText}</Text>
+        
+        {/* SUMMARY CARD */}
+        <View style={styles.summaryCard}>
+           <View style={styles.cardHeaderRow}>
+             <Text style={styles.complaintIdText}>#SL-{displayId}</Text>
+             <View style={[styles.statusBadge, { backgroundColor: statusColor + '15' }]}>
+               <Text style={[styles.statusText, { color: statusColor }]}>{status}</Text>
+             </View>
+           </View>
+           <Text style={styles.title}>{complaint.title || complaint.category}</Text>
+           <View style={styles.locationRow}>
+             <Ionicons name="location" size={16} color="#0041C7" />
+             <Text style={styles.locationText}>{locationText}</Text>
+           </View>
         </View>
 
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: imageUrl }} style={styles.mainImage} />
-          <TouchableOpacity style={styles.viewPhotoBtn} onPress={() => setImageModalVisible(true)}>
-            <Ionicons name="search" size={12} color="#fff" />
-            <Text style={styles.viewPhotoText}>VIEW PHOTO</Text>
-          </TouchableOpacity>
-        </View>
+        {/* 🌟 MULTIPLE IMAGES ROW 🌟 */}
+        <Text style={styles.sectionLabel}>EVIDENCE PHOTOS</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageScrollContainer}>
+          {imageList.map((url, index) => (
+            <TouchableOpacity key={index} activeOpacity={0.8} onPress={() => openImageModal(url)} style={styles.imageWrapper}>
+              <Image source={{ uri: url }} style={styles.mainImage} />
+              <View style={styles.viewPhotoOverlay}>
+                <Ionicons name="expand" size={14} color="#fff" />
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
 
         <Text style={styles.sectionLabel}>DESCRIPTION</Text>
-        <Text style={styles.descText}>{complaint.description}</Text>
+        <View style={styles.descCard}>
+          <Text style={styles.descText}>{complaint.description}</Text>
+        </View>
 
+        {/* AUTHORITY CARD */}
         <View style={styles.authorityCard}>
-          <View style={[styles.authorityIconBox, { backgroundColor: assignedAuthority ? '#0041C7' : '#94A3B8' }]}>
-            <MaterialCommunityIcons name="office-building" size={20} color="#fff" />
+          <View style={[styles.authorityIconBox, { backgroundColor: assignedAuthority ? 'rgba(0, 65, 199, 0.1)' : '#F1F5F9' }]}>
+            <MaterialCommunityIcons name="office-building" size={24} color={assignedAuthority ? '#0041C7' : '#94A3B8'} />
           </View>
-          <View>
+          <View style={{ flex: 1 }}>
             <Text style={[styles.authorityLabel, { color: assignedAuthority ? '#0041C7' : '#64748B' }]}>ASSIGNED AUTHORITY</Text>
-            <Text style={[styles.authorityName, { color: assignedAuthority ? '#1E293B' : '#94A3B8' }]}>
+            <Text style={[styles.authorityName, { color: assignedAuthority ? '#1E293B' : '#94A3B8' }]} numberOfLines={1}>
               {assignedAuthority ? assignedAuthority : "Pending Assignment"}
             </Text>
           </View>
         </View>
 
+        {/* STATUS TIMELINE */}
         <Text style={styles.sectionLabel}>STATUS TIMELINE</Text>
-        <View style={styles.timelineContainer}>
+        <View style={styles.timelineCard}>
           
           <View style={styles.timelineRow}>
             <View style={styles.timelineLine} />
-            <View style={[styles.timelineDot, { backgroundColor: '#0041C7' }]}>
+            <View style={[styles.timelineDot, { backgroundColor: '#0041C7', borderColor: '#0041C7' }]}>
               <Ionicons name="checkmark" size={12} color="#fff" />
             </View>
             <View style={styles.timelineContent}>
@@ -161,12 +194,12 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
 
           <View style={styles.timelineRow}>
             <View style={[styles.timelineLine, { backgroundColor: assignedAuthority ? '#0041C7' : '#E2E8F0' }]} />
-            <View style={[styles.timelineDot, { backgroundColor: assignedAuthority ? '#0041C7' : '#E2E8F0' }]}>
+            <View style={[styles.timelineDot, { backgroundColor: assignedAuthority ? '#0041C7' : '#fff', borderColor: assignedAuthority ? '#0041C7' : '#CBD5E1' }]}>
               {assignedAuthority ? <Ionicons name="checkmark" size={12} color="#fff" /> : null}
             </View>
             <View style={styles.timelineContent}>
               <Text style={[styles.timelineTitleActive, { color: assignedAuthority ? '#1E293B' : '#94A3B8' }]}>
-                {assignedAuthority ? `Assigned to ${assignedAuthority}` : "Awaiting Assignment"}
+                {assignedAuthority ? `Assigned to Authority` : "Awaiting Assignment"}
               </Text>
               <Text style={styles.timelineDate}>
                 {assignedAuthority ? (complaint.updated_at ? formatDateTime(complaint.updated_at) : "Recently Assigned") : "Pending"}
@@ -175,26 +208,26 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
           </View>
 
           <View style={styles.timelineRow}>
-            <View style={[styles.timelineLine, { backgroundColor: status === 'RESOLVED' ? '#0041C7' : '#E2E8F0' }]} />
-            <View style={[styles.timelineDot, { backgroundColor: status === 'IN PROGRESS' || status === 'RESOLVED' ? '#0041C7' : '#E2E8F0' }]}>
+            <View style={[styles.timelineLine, { backgroundColor: status === 'RESOLVED' ? '#28C76F' : '#E2E8F0' }]} />
+            <View style={[styles.timelineDot, { backgroundColor: status === 'IN PROGRESS' || status === 'RESOLVED' ? '#0041C7' : '#fff', borderColor: status === 'IN PROGRESS' || status === 'RESOLVED' ? '#0041C7' : '#CBD5E1' }]}>
               {status === 'IN PROGRESS' || status === 'RESOLVED' ? <Ionicons name="checkmark" size={12} color="#fff" /> : null}
             </View>
             <View style={styles.timelineContent}>
-              <Text style={[styles.timelineTitleActive, { color: status === 'IN PROGRESS' || status === 'RESOLVED' ? '#0041C7' : '#94A3B8' }]}>Work In Progress</Text>
+              <Text style={[styles.timelineTitleActive, { color: status === 'IN PROGRESS' || status === 'RESOLVED' ? '#1E293B' : '#94A3B8' }]}>Work In Progress</Text>
               <Text style={styles.timelineDate}>
-                {status === 'IN PROGRESS' || status === 'RESOLVED' ? "Authority is resolving issue" : "Pending start"}
+                {status === 'IN PROGRESS' || status === 'RESOLVED' ? "Engineers have started work" : "Pending start"}
               </Text>
             </View>
           </View>
 
-          <View style={styles.timelineRow}>
-            <View style={[styles.timelineDot, { backgroundColor: status === 'RESOLVED' ? '#28C76F' : '#E2E8F0' }]}>
+          <View style={[styles.timelineRow, { marginBottom: 0 }]}>
+            <View style={[styles.timelineDot, { backgroundColor: status === 'RESOLVED' ? '#28C76F' : '#fff', borderColor: status === 'RESOLVED' ? '#28C76F' : '#CBD5E1' }]}>
                {status === 'RESOLVED' ? <Ionicons name="checkmark" size={12} color="#fff" /> : null}
             </View>
             <View style={styles.timelineContent}>
-              <Text style={[styles.timelineTitleActive, { color: status === 'RESOLVED' ? '#1E293B' : '#94A3B8' }]}>Resolved</Text>
+              <Text style={[styles.timelineTitleActive, { color: status === 'RESOLVED' ? '#28C76F' : '#94A3B8' }]}>Resolved</Text>
               <Text style={styles.timelineDate}>
-                {status === 'RESOLVED' ? "Issue has been closed" : "Pending completion"}
+                {status === 'RESOLVED' ? "Issue successfully closed" : "Pending completion"}
               </Text>
             </View>
           </View>
@@ -202,55 +235,87 @@ export default function ComplaintDetailsScreen({ onBack, onNavigateToChat, compl
         </View>
       </ScrollView>
 
+      {/* FLOATING ACTION BOTTOM BAR */}
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.chatButton} onPress={onNavigateToChat}>
-          <Ionicons name="chatbubble-ellipses" size={18} color="#fff" />
-          <Text style={styles.chatButtonText}>Chat with Authority</Text>
+        <TouchableOpacity style={{ flex: 1 }} onPress={onNavigateToChat} activeOpacity={0.8}>
+           <LinearGradient colors={['#0041C7', '#0D85D8']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.chatButton}>
+             <Ionicons name="chatbubbles" size={20} color="#fff" />
+             <Text style={styles.chatButtonText}>Chat with Authority</Text>
+           </LinearGradient>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionsButton} onPress={handleOptionsClick}>
-          <Ionicons name="ellipsis-horizontal" size={24} color="#0041C7" />
+        <TouchableOpacity style={styles.optionsButton} onPress={handleOptionsClick} activeOpacity={0.7}>
+          <Ionicons name="ellipsis-vertical" size={24} color="#64748B" />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 
+// --- PREMIUM UI STYLES ---
 const styles = StyleSheet.create({
-  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
-  container: { flex: 1, backgroundColor: '#fff' },
-  modalBackground: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.9)', justifyContent: 'center', alignItems: 'center' },
-  closeModalBtn: { position: 'absolute', top: 50, right: 20, zIndex: 10, padding: 10 },
-  fullScreenImage: { width: '100%', height: '80%' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
-  headerIcon: { padding: 5 },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F8FAFC' },
+  loadingText: { marginTop: 15, color: '#64748B', fontWeight: '600', fontSize: 16 },
+  errorText: { color: '#64748B', fontSize: 18, fontWeight: '700', marginTop: 15 },
+  goBackBtn: { marginTop: 25, backgroundColor: '#0041C7', paddingHorizontal: 25, paddingVertical: 12, borderRadius: 12 },
+  goBackText: { color: '#fff', fontWeight: '800', fontSize: 16 },
+  
+  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  
+  // Standardized Navbar
+  topNavBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 15, backgroundColor: '#F8FAFC' },
+  backBtn: { flexDirection: 'row', alignItems: 'center', width: 70 },
+  backText: { color: '#0041C7', fontSize: 16, fontWeight: '700', marginLeft: 4 },
   headerTitleContainer: { alignItems: 'center' },
-  headerTitle: { fontSize: 16, fontWeight: 'bold', color: '#1E293B' },
-  headerSubtitle: { fontSize: 10, color: '#0D85D8', fontWeight: 'bold', letterSpacing: 1, marginTop: 2 },
+  navTitle: { fontSize: 18, fontWeight: '900', color: '#1E293B' },
+  headerSubtitle: { fontSize: 10, color: '#0160C9', fontWeight: '800', letterSpacing: 1, marginTop: 2 },
+  
   scrollContent: { padding: 20, paddingBottom: 100 },
-  statusBadge: { alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, marginBottom: 10 },
-  statusText: { fontSize: 10, fontWeight: 'bold', letterSpacing: 0.5 },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#1E293B', marginBottom: 8 },
-  locationRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  locationText: { fontSize: 13, color: '#64748B', marginLeft: 5 },
-  imageContainer: { width: '100%', height: 200, borderRadius: 16, overflow: 'hidden', marginBottom: 25, position: 'relative', backgroundColor: '#F1F5F9' },
+  
+  // Summary Card
+  summaryCard: { backgroundColor: '#fff', borderRadius: 20, padding: 20, marginBottom: 25, borderWidth: 1.5, borderColor: '#E2E8F0', elevation: 2, shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 5 },
+  cardHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+  complaintIdText: { fontSize: 15, fontWeight: '900', color: '#0041C7', letterSpacing: 0.5 },
+  statusBadge: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 12 },
+  statusText: { fontSize: 11, fontWeight: '800', letterSpacing: 0.5 },
+  title: { fontSize: 22, fontWeight: '900', color: '#1E293B', marginBottom: 12, lineHeight: 28 },
+  locationRow: { flexDirection: 'row', alignItems: 'flex-start' },
+  locationText: { fontSize: 14, color: '#64748B', marginLeft: 6, fontWeight: '600', flex: 1, lineHeight: 20 },
+  
+  sectionLabel: { fontSize: 12, fontWeight: '800', color: '#64748B', letterSpacing: 1, marginBottom: 12, marginLeft: 5 },
+  
+  // Multiple Image Scroll
+  imageScrollContainer: { flexDirection: 'row', marginBottom: 25 },
+  imageWrapper: { width: 280, height: 180, borderRadius: 16, overflow: 'hidden', marginRight: 15, borderWidth: 1, borderColor: '#E2E8F0', backgroundColor: '#F1F5F9' },
   mainImage: { width: '100%', height: '100%' },
-  viewPhotoBtn: { position: 'absolute', bottom: 10, right: 10, backgroundColor: 'rgba(0, 65, 199, 0.8)', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
-  viewPhotoText: { color: '#fff', fontSize: 10, fontWeight: 'bold', marginLeft: 5 },
-  sectionLabel: { fontSize: 12, fontWeight: 'bold', color: '#0041C7', letterSpacing: 1, marginBottom: 10, marginTop: 10 },
-  descText: { fontSize: 15, color: '#334155', lineHeight: 22, marginBottom: 25 },
-  authorityCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F8FAFC', padding: 15, borderRadius: 16, marginBottom: 30, borderWidth: 1, borderColor: '#E2E8F0' },
-  authorityIconBox: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
-  authorityLabel: { fontSize: 10, fontWeight: 'bold', letterSpacing: 0.5 },
-  authorityName: { fontSize: 15, fontWeight: 'bold', marginTop: 2 },
-  timelineContainer: { marginTop: 10, paddingLeft: 10 },
-  timelineRow: { flexDirection: 'row', marginBottom: 25, position: 'relative' },
-  timelineLine: { position: 'absolute', left: 11, top: 24, bottom: -25, width: 2 },
-  timelineDot: { width: 24, height: 24, borderRadius: 12, justifyContent: 'center', alignItems: 'center', zIndex: 1 },
-  timelineContent: { flex: 1, marginLeft: 15, paddingTop: 2 },
-  timelineTitleActive: { fontSize: 15, fontWeight: 'bold' },
-  timelineDate: { fontSize: 12, color: '#94A3B8', marginTop: 4 },
-  bottomBar: { position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', padding: 15, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#F1F5F9', alignItems: 'center', paddingBottom: 25 },
-  chatButton: { flex: 1, flexDirection: 'row', backgroundColor: '#0041C7', height: 50, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginRight: 10 },
-  chatButtonText: { color: '#fff', fontSize: 15, fontWeight: 'bold', marginLeft: 8 },
-  optionsButton: { width: 50, height: 50, backgroundColor: '#F1F5F9', borderRadius: 12, justifyContent: 'center', alignItems: 'center' }
+  viewPhotoOverlay: { position: 'absolute', bottom: 10, right: 10, backgroundColor: 'rgba(15, 23, 42, 0.7)', width: 32, height: 32, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
+  
+  // Description Card
+  descCard: { backgroundColor: '#fff', borderRadius: 16, padding: 20, marginBottom: 25, borderWidth: 1.5, borderColor: '#E2E8F0' },
+  descText: { fontSize: 15, color: '#334155', lineHeight: 24, fontWeight: '500' },
+  
+  // Authority Card
+  authorityCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 20, borderRadius: 20, marginBottom: 25, borderWidth: 1.5, borderColor: '#E2E8F0', elevation: 2, shadowOpacity: 0.03 },
+  authorityIconBox: { width: 48, height: 48, borderRadius: 14, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  authorityLabel: { fontSize: 11, fontWeight: '800', letterSpacing: 0.5, marginBottom: 2 },
+  authorityName: { fontSize: 16, fontWeight: '800' },
+  
+  // Timeline Card
+  timelineCard: { backgroundColor: '#fff', borderRadius: 20, padding: 25, paddingBottom: 30, borderWidth: 1.5, borderColor: '#E2E8F0', elevation: 2, shadowOpacity: 0.03, shadowRadius: 5 },
+  timelineRow: { flexDirection: 'row', marginBottom: 30, position: 'relative' },
+  timelineLine: { position: 'absolute', left: 13, top: 28, bottom: -30, width: 2 },
+  timelineDot: { width: 28, height: 28, borderRadius: 14, justifyContent: 'center', alignItems: 'center', zIndex: 1, borderWidth: 2 },
+  timelineContent: { flex: 1, marginLeft: 15, paddingTop: 4 },
+  timelineTitleActive: { fontSize: 15, fontWeight: '800' },
+  timelineDate: { fontSize: 13, color: '#94A3B8', marginTop: 4, fontWeight: '500' },
+  
+  // Bottom Bar
+  bottomBar: { position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', padding: 20, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#E2E8F0', alignItems: 'center' },
+  chatButton: { flexDirection: 'row', height: 55, borderRadius: 16, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  chatButtonText: { color: '#fff', fontSize: 16, fontWeight: '800', marginLeft: 10, letterSpacing: 0.5 },
+  optionsButton: { width: 55, height: 55, backgroundColor: '#F8FAFC', borderRadius: 16, justifyContent: 'center', alignItems: 'center', borderWidth: 1.5, borderColor: '#E2E8F0' },
+
+  // Modal
+  modalBackground: { flex: 1, backgroundColor: 'rgba(15, 23, 42, 0.95)', justifyContent: 'center', alignItems: 'center' },
+  closeModalBtn: { position: 'absolute', top: 50, right: 25, zIndex: 10 },
+  fullScreenImage: { width: '100%', height: '80%' }
 });

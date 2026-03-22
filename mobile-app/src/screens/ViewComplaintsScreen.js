@@ -123,6 +123,9 @@ export default function ViewComplaintsScreen({ onNavigateToDetails, userId }) {
             const displayId = item.id || item.complaint_id || '0000';
             const uniqueKey = displayId !== '0000' ? displayId.toString() : index.toString();
             const statusColor = getStatusColor(item.status);
+            
+            // 🌟 THE FIX: Grab only the first image if there are multiple separated by commas
+            const firstImage = item.image_url ? item.image_url.split(',')[0] : null;
 
             return (
               <View key={uniqueKey} style={styles.complaintCard}>
@@ -137,7 +140,7 @@ export default function ViewComplaintsScreen({ onNavigateToDetails, userId }) {
                 
                 <View style={styles.cardBody}>
                   <Image 
-                    source={{ uri: item.image_url ? `${SERVER_URL}${item.image_url}` : 'https://via.placeholder.com/150' }} 
+                    source={{ uri: firstImage ? `${SERVER_URL}${firstImage}` : 'https://via.placeholder.com/150' }} 
                     style={styles.thumbImage} 
                   />
                   <View style={styles.textContainer}>
